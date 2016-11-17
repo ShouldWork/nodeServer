@@ -3,24 +3,25 @@ var fs = require('fs');
 var XMLSerializer = require('xmldom').XMLSerializer;
 var serializer = new XMLSerializer(); 
 
+function fixXML(){
+    fs.readFile('XactDoc.xml','utf-8',function(err,data,next){
+      if (err){
+        throw err; 
+      }
+      var snapShot; 
+      doc = new xmldom().parseFromString(data,'application/xml');
+      snapShot = doc.getElementsByTagName('ProjectSnapshots');
+      doc.removeChild(snapShot[0]);
+      var newDoc = serializer.serializeToString(doc);
+      fs.writeFile('./XACTDOC.xml',newDoc,function(err,data){
+        if (err){
+          throw err; 
+        }
+      });
+    }); 
+}
 
-fs.readFile('XactDoc.xml','utf-8',function(err,data,next){
-  if (err){
-    throw err; 
-  }
-  var snapShot; 
-  doc = new xmldom().parseFromString(data,'application/xml');
-  snapShot = doc.getElementsByTagName('ProjectSnapshots');
-  doc.removeChild(snapShot[0]);
-  var newDoc = serializer.serializeToString(doc);
-  fs.writeFile('./XACTDOC.xml',newDoc,function(err,data){
-    if (err){
-      throw err; 
-    }
-  });
-}); 
-
-
+exports.fixXML = fixXML; 
 // fs.readFile('XACTDOC.xml', 'utf-8', function (err, data) {
 //   if (err) {
 //     throw err;
