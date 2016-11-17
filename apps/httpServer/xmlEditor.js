@@ -4,14 +4,18 @@ var XMLSerializer = require('xmldom').XMLSerializer;
 var serializer = new XMLSerializer(); 
 
 function fixXML(){
-    fs.readFile('XactDoc.xml','utf-8',function(err,data,next){
+    fs.readFile('XACTDOC.xml','utf-8',function(err,data,next){
       if (err){
         throw err; 
       }
       var snapShot; 
       doc = new xmldom().parseFromString(data,'application/xml');
       snapShot = doc.getElementsByTagName('ProjectSnapshots');
-      doc.removeChild(snapShot[0]);
+      try{
+        doc.removeChild(snapShot[0]);
+      } catch (err){
+        console.log("This document has no ProjectSnapshots to remove\nMust be something else?!");
+      }
       var newDoc = serializer.serializeToString(doc);
       fs.writeFile('./XACTDOC.xml',newDoc,function(err,data){
         if (err){
